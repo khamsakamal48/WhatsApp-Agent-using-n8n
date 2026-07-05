@@ -1,0 +1,21 @@
+services:
+  evolution-api:
+    image: evoapicloud/evolution-api:latest
+    container_name: evolution-api
+    restart: unless-stopped
+    networks: [n8n_net]                 # joins the existing n8n network → reaches Postgres/redis/n8n by name
+    env_file: .env
+    volumes:
+      - ./instances:/evolution/instances
+    ports:
+      - "127.0.0.1:8080:8080"           # local-only (manager UI + debugging); in-network access is http://evolution-api:8080
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "0.5"
+
+networks:
+  n8n_net:
+    external: true
+    name: n8n_net                       # actual network from `docker network ls`
